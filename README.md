@@ -19,16 +19,39 @@ Application.Run();
 
 ## Quick Start
 
+### macOS / Linux / FreeBSD
+
 ```bash
-# Clone with submodule
+# 1. Clone with submodule
 git clone --recursive https://github.com/steveriemannx/NanaSharp.git
 cd NanaSharp
 
-# Build (C++ wrapper + C# library + example)
+# 2. Build C++ wrapper + C# library + copy native lib
 ./build.sh
 
-# Run the demo
+# 3. Run the demo
 dotnet run --project samples/HelloWorld
+```
+
+`build.sh` handles CMake, dotnet build, and copies the native library
+(`libnanawrap.dylib` / `.so`) into the output directory automatically.
+
+### Windows
+
+```cmd
+git clone --recursive https://github.com/steveriemannx/NanaSharp.git
+cd NanaSharp
+
+cmake -S native\nanawrap -B native\nanawrap\build
+cmake --build native\nanawrap\build --config Release
+
+dotnet build src\NanaSharp\NanaSharp.csproj -c Release
+dotnet build samples\HelloWorld\HelloWorld.csproj -c Release
+
+copy native\nanawrap\build\Release\nanawrap.dll samples\HelloWorld\bin\Release\net10.0\
+
+cd samples\HelloWorld
+dotnet run
 ```
 
 ## Usage
@@ -41,32 +64,15 @@ cd MyApp
 dotnet add reference ../NanaSharp/src/NanaSharp/NanaSharp.csproj
 ```
 
-Then write your code with `using Nana;` and make sure `libnanawrap`
-is in the output directory:
+Write your code with `using Nana;`. The native library must be in the output directory:
 
-| Platform | Native library |
-|----------|---------------|
-| Windows | `nanawrap.dll` |
-| macOS | `libnanawrap.dylib` |
-| Linux / FreeBSD | `libnanawrap.so` |
+| Platform | Native library | Copy command |
+|----------|---------------|-------------|
+| Windows | `nanawrap.dll` | `copy native\nanawrap\build\Release\nanawrap.dll MyApp\bin\Release\net10.0\` |
+| macOS | `libnanawrap.dylib` | `cp native/nanawrap/build/libnanawrap.dylib MyApp/bin/Release/net10.0/` |
+| Linux / FreeBSD | `libnanawrap.so` | `cp native/nanawrap/build/libnanawrap.so MyApp/bin/Release/net10.0/` |
 
-`build.sh` copies the library automatically. For your own project:
-
-```bash
-cp NanaSharp/native/nanawrap/build/libnanawrap.dylib MyApp/bin/Debug/net8.0/
-```
-
-### Windows
-
-```cmd
-git clone --recursive https://github.com/steveriemannx/NanaSharp.git
-cd NanaSharp
-cmake -S native\nanawrap -B native\nanawrap\build
-cmake --build native\nanawrap\build --config Release
-dotnet build
-copy native\nanawrap\build\Release\nanawrap.dll samples\HelloWorld\bin\Release\net8.0\
-dotnet run --project samples\HelloWorld
-```
+> `build.sh` does this copy automatically for the included samples.
 
 ## Prerequisites
 
@@ -77,7 +83,7 @@ dotnet run --project samples\HelloWorld
 | **Linux** | `sudo apt install libx11-dev libxft-dev libfontconfig1-dev libpng-dev libjpeg-dev cmake` |
 | **FreeBSD** | `pkg install xorg-libraries fontconfig freetype2 png jpeg cmake` |
 
-All platforms need [.NET 8.0 SDK](https://dotnet.microsoft.com/download).
+All platforms need [.NET SDK](https://dotnet.microsoft.com/download) (8.0+).
 
 ## Architecture
 
