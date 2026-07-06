@@ -108,4 +108,4 @@ NanaSharp/
 
 ## License
 
-BSL-1.0 — same as Nana.
+BSD 2-Clause.
