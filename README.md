@@ -30,7 +30,7 @@ cd NanaSharp
 ./build.sh
 
 # 3. Run the demo
-dotnet run --project samples/HelloWorld
+dotnet run -c Release --project samples/HelloWorld
 ```
 
 `build.sh` handles CMake, dotnet build, and copies the native library

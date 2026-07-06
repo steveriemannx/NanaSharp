@@ -25,15 +25,21 @@ LIB_SRC_WIN="$ROOT/native/nanawrap/build/Release/nanawrap.dll"
 HELLO_CS_PROJ="$ROOT/samples/HelloWorld/HelloWorld.csproj"
 TFM=$(sed -n 's/.*<TargetFramework>\([^<]*\)<\/TargetFramework>.*/\1/p' "$HELLO_CS_PROJ")
 LIB_DST="$ROOT/samples/HelloWorld/bin/$BUILD_TYPE/$TFM/"
+LIB_DST_DBG="$ROOT/samples/HelloWorld/bin/Debug/$TFM/"
+
+mkdir -p "$LIB_DST" "$LIB_DST_DBG"
 
 if [ -f "$LIB_SRC" ]; then
     cp "$LIB_SRC" "$LIB_DST"
+    cp "$LIB_SRC" "$LIB_DST_DBG"
 elif [ -f "$LIB_SRC_SO" ]; then
     cp "$LIB_SRC_SO" "$LIB_DST"
+    cp "$LIB_SRC_SO" "$LIB_DST_DBG"
 elif [ -f "$LIB_SRC_WIN" ]; then
     cp "$LIB_SRC_WIN" "$LIB_DST"
+    cp "$LIB_SRC_WIN" "$LIB_DST_DBG"
 fi
 
 echo ""
 echo "==> All done!"
-echo "    Run:  dotnet run --project samples/HelloWorld"
+echo "    Run:  dotnet run -c $BUILD_TYPE --project samples/HelloWorld"
