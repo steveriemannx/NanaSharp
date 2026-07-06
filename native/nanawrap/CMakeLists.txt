@@ -19,6 +19,11 @@ endif()
 
 # ── Library target ────────────────────────────────────────────────────
 
+if(WIN32)
+    # Must be set BEFORE add_library so P/Invoke can find DLL symbols
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
 add_library(nanawrap SHARED)
 
 target_compile_features(nanawrap PUBLIC cxx_std_17)
@@ -60,11 +65,6 @@ set(NANAWRAP_SOURCES
 target_sources(nanawrap PRIVATE ${NANAWRAP_SOURCES})
 
 # ── Platform-specific settings ────────────────────────────────────────
-
-if(WIN32)
-    # Export all C functions so P/Invoke can find them
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-endif()
 
 if(UNIX)
     target_compile_options(nanawrap PRIVATE -fPIC)
