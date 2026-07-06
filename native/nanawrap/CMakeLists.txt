@@ -77,20 +77,6 @@ if(APPLE)
     )
 endif()
 
-# ── Install ───────────────────────────────────────────────────────────
-
-include(GNUInstallDirs)
-
-install(TARGETS nanawrap
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-
-install(DIRECTORY include/
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-)
-
 # ── Export information ────────────────────────────────────────────────
 
 message(STATUS "nanawrap — C wrapper for Nana GUI")
