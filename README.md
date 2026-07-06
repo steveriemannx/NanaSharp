@@ -1,7 +1,7 @@
 # NanaSharp
 
 C# bindings for the [Nana C++ GUI library](https://github.com/cnjinhao/nana).
-Write cross-platform desktop GUI apps in C# that run on **macOS, Linux, FreeBSD, and Windows**.
+Write cross-platform desktop GUI apps in C# that run on **Windows, macOS, Linux, and FreeBSD**.
 
 ```csharp
 using Nana;
@@ -46,9 +46,9 @@ is in the output directory:
 
 | Platform | Native library |
 |----------|---------------|
+| Windows | `nanawrap.dll` |
 | macOS | `libnanawrap.dylib` |
 | Linux / FreeBSD | `libnanawrap.so` |
-| Windows | `nanawrap.dll` |
 
 `build.sh` copies the library automatically. For your own project:
 
@@ -72,10 +72,10 @@ dotnet run --project examples\HelloWorld
 
 | Platform | Dependencies |
 |----------|-------------|
+| **Windows** | Visual Studio 2022 with C++ desktop workload, or MinGW-w64 |
 | **macOS** | Xcode Command Line Tools (`xcode-select --install`) |
 | **Linux** | `sudo apt install libx11-dev libxft-dev libfontconfig1-dev libpng-dev libjpeg-dev cmake` |
 | **FreeBSD** | `pkg install xorg-libraries fontconfig freetype2 png jpeg cmake` |
-| **Windows** | Visual Studio 2022 with C++ desktop workload, or MinGW-w64 |
 
 All platforms need [.NET 8.0 SDK](https://dotnet.microsoft.com/download).
 
@@ -85,7 +85,7 @@ All platforms need [.NET 8.0 SDK](https://dotnet.microsoft.com/download).
 NanaSharp (C#)
   └─ P/Invoke → nanawrap (C ABI shared lib)
                    └─ Nana (C++ GUI library)
-                        └─ Platform: Cocoa / X11 / Win32
+                        └─ Platform: Win32 / Cocoa / X11
 ```
 
 ## Project Structure
