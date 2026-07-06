@@ -2,7 +2,7 @@ using Nana;
 
 // ── Hello World — Demonstrates the core NanaSharp API ────────────────
 
-var form = new Form("Hello NanaSharp!", 400, 300);
+using var form = new Form("Hello NanaSharp!", 460, 300);
 
 var label = new Label(form, "Welcome to NanaSharp!", 10, 10, 380, 30);
 label.CenterText();
@@ -35,4 +35,13 @@ quitBtn.Click += (_, _) =>
 form.Show();
 Console.WriteLine("NanaSharp HelloWorld is running. Close the window to exit.");
 Application.Run();
+
+// Ensure native resources are freed before C++ static cleanup
+label.Dispose();
+nameLabel.Dispose();
+nameBox.Dispose();
+greetBtn.Dispose();
+outputLabel.Dispose();
+quitBtn.Dispose();
+
 Console.WriteLine("Goodbye!");

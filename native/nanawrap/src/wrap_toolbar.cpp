@@ -4,9 +4,11 @@
 #include "nw_internal.h"
 #include <nana/gui.hpp>
 #include <nana/gui/widgets/toolbar.hpp>
+#include <mutex>
 #include <new>
-#include <vector>
+#include <unordered_map>
 #include <utility>
+#include <vector>
 
 /* Store per-button callbacks keyed by toolbar handle + button index */
 struct ToolbarButtonCtx {
@@ -51,7 +53,7 @@ void nw_toolbar_append_button(nw_toolbar_handle tb, const char* text,
     /* Install the selected event handler once per toolbar */
     if (!g_toolbar_event_set[tb]) {
         g_toolbar_event_set[tb] = true;
-        t->events().selected([tb](const nana::arg_toolbar& arg) {
+        t->events().selected([&](const nana::arg_toolbar& arg) {
             std::lock_guard<std::mutex> lk(g_toolbar_mutex);
             auto it = g_toolbar_buttons.find(tb);
             if (it != g_toolbar_buttons.end() && arg.button < it->second.size()) {
