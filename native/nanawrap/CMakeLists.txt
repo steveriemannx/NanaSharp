@@ -61,6 +61,11 @@ target_sources(nanawrap PRIVATE ${NANAWRAP_SOURCES})
 
 # ── Platform-specific settings ────────────────────────────────────────
 
+if(WIN32)
+    # Export all C functions so P/Invoke can find them
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+endif()
+
 if(UNIX)
     target_compile_options(nanawrap PRIVATE -fPIC)
 endif()
