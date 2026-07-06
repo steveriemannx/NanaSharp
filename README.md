@@ -20,10 +20,52 @@ Application.Run();
 ## Quick Start
 
 ```bash
+# Clone with submodule
 git clone --recursive https://github.com/steveriemannx/NanaSharp.git
 cd NanaSharp
+
+# Build (C++ wrapper + C# library + example)
 ./build.sh
+
+# Run the demo
 dotnet run --project examples/HelloWorld
+```
+
+## Usage
+
+### Create your own app
+
+```bash
+dotnet new console -n MyApp
+cd MyApp
+dotnet add reference ../NanaSharp/src/NanaSharp/NanaSharp.csproj
+```
+
+Then write your code with `using Nana;` and make sure `libnanawrap`
+is in the output directory:
+
+| Platform | Native library |
+|----------|---------------|
+| macOS | `libnanawrap.dylib` |
+| Linux / FreeBSD | `libnanawrap.so` |
+| Windows | `nanawrap.dll` |
+
+`build.sh` copies the library automatically. For your own project:
+
+```bash
+cp NanaSharp/native/nanawrap/build/libnanawrap.dylib MyApp/bin/Debug/net8.0/
+```
+
+### Windows
+
+```cmd
+git clone --recursive https://github.com/steveriemannx/NanaSharp.git
+cd NanaSharp
+cmake -S native\nanawrap -B native\nanawrap\build
+cmake --build native\nanawrap\build --config Release
+dotnet build
+copy native\nanawrap\build\Release\nanawrap.dll examples\HelloWorld\bin\Release\net8.0\
+dotnet run --project examples\HelloWorld
 ```
 
 ## Prerequisites
