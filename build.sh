@@ -23,7 +23,7 @@ LIB_SRC_WIN="$ROOT/native/nanawrap/build/Release/nanawrap.dll"
 
 # Read TargetFramework from the .csproj so we don't hardcode it
 HELLO_CS_PROJ="$ROOT/samples/HelloWorld/HelloWorld.csproj"
-TFM=$(grep -oP '<TargetFramework>\K[^<]+' "$HELLO_CS_PROJ")
+TFM=$(sed -n 's/.*<TargetFramework>\([^<]*\)<\/TargetFramework>.*/\1/p' "$HELLO_CS_PROJ")
 LIB_DST="$ROOT/samples/HelloWorld/bin/$BUILD_TYPE/$TFM/"
 
 if [ -f "$LIB_SRC" ]; then

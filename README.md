@@ -36,6 +36,12 @@ dotnet run --project samples/HelloWorld
 `build.sh` handles CMake, dotnet build, and copies the native library
 (`libnanawrap.dylib` / `.so`) into the output directory automatically.
 
+### Updating
+
+```bash
+git pull origin main && git submodule update --init --recursive
+```
+
 ### Windows
 
 ```cmd
