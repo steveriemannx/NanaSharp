@@ -1,0 +1,19 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+*.nupkg
+
+# CMake / native build
+native/nanawrap/build/
+native/**/cmake-build-*/
+
+# macOS
+.DS_Store
+*.dylib
+*.so
+
+# IDE
+.idea/
+.vscode/
