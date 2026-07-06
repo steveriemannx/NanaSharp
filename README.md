@@ -28,7 +28,7 @@ cd NanaSharp
 ./build.sh
 
 # Run the demo
-dotnet run --project examples/HelloWorld
+dotnet run --project samples/HelloWorld
 ```
 
 ## Usage
@@ -64,8 +64,8 @@ cd NanaSharp
 cmake -S native\nanawrap -B native\nanawrap\build
 cmake --build native\nanawrap\build --config Release
 dotnet build
-copy native\nanawrap\build\Release\nanawrap.dll examples\HelloWorld\bin\Release\net8.0\
-dotnet run --project examples\HelloWorld
+copy native\nanawrap\build\Release\nanawrap.dll samples\HelloWorld\bin\Release\net8.0\
+dotnet run --project samples\HelloWorld
 ```
 
 ## Prerequisites
@@ -95,7 +95,7 @@ NanaSharp/
 ├── nana/                  ← git submodule (Nana C++ library)
 ├── native/nanawrap/       ← C ABI wrapper (CMake → libnanawrap)
 ├── src/NanaSharp/         ← C# binding library (namespace: Nana)
-├── examples/HelloWorld/   ← demo application
+├── samples/HelloWorld/   ← demo application
 ├── build.sh               ← one-command build
 └── README.md
 ```
