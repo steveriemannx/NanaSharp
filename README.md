@@ -65,6 +65,8 @@ copy native\nanawrap\build\Release\nanawrap.dll samples\HelloWorld\bin\Release\n
 
 cd samples\HelloWorld
 dotnet run
+rem dotnet run -c Debug    (Debug)
+rem dotnet run -c Release  (Release)
 ```
 
 ## Usage
