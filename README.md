@@ -48,12 +48,17 @@ git pull origin main && git submodule update --init --recursive
 git clone --recursive https://github.com/steveriemannx/NanaSharp.git
 cd NanaSharp
 
+rem Build native DLL for both Debug and Release
 cmake -S native\nanawrap -B native\nanawrap\build
+cmake --build native\nanawrap\build --config Debug
 cmake --build native\nanawrap\build --config Release
 
-dotnet build src\NanaSharp\NanaSharp.csproj -c Release
-dotnet build samples\HelloWorld\HelloWorld.csproj -c Release
+rem Build managed projects
+dotnet build src\NanaSharp\NanaSharp.csproj
+dotnet build samples\HelloWorld\HelloWorld.csproj
 
+rem Copy native DLL to both Debug and Release output
+copy native\nanawrap\build\Debug\nanawrap.dll samples\HelloWorld\bin\Debug\net10.0\
 copy native\nanawrap\build\Release\nanawrap.dll samples\HelloWorld\bin\Release\net10.0\
 
 cd samples\HelloWorld
