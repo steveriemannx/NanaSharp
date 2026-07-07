@@ -53,9 +53,11 @@ cmake -S native\nanawrap -B native\nanawrap\build
 cmake --build native\nanawrap\build --config Debug
 cmake --build native\nanawrap\build --config Release
 
-rem Build managed projects
+rem Build managed projects (Debug + Release)
 dotnet build src\NanaSharp\NanaSharp.csproj
+dotnet build src\NanaSharp\NanaSharp.csproj -c Release
 dotnet build samples\HelloWorld\HelloWorld.csproj
+dotnet build samples\HelloWorld\HelloWorld.csproj -c Release
 
 rem Copy native DLL to both Debug and Release output
 copy native\nanawrap\build\Debug\nanawrap.dll samples\HelloWorld\bin\Debug\net10.0\
