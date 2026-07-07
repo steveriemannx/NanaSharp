@@ -2,44 +2,52 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
-BUILD_TYPE="${1:-Release}"
+BUILD_TYPE="${1:-Release}"   # 默认 Release
 
-echo "==> Building Nana C++ library + nanawrap C wrapper ($BUILD_TYPE) ..."
+# ── Native library (C++) ──────────────────────────────────────────────
+
+echo "==> Building native library ($BUILD_TYPE) ..."
 cmake -S "$ROOT/native/nanawrap" \
       -B "$ROOT/native/nanawrap/build" \
       -DCMAKE_BUILD_TYPE="$BUILD_TYPE"
 cmake --build "$ROOT/native/nanawrap/build" --config "$BUILD_TYPE" -- -j"$(nproc 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4)"
 
-echo "==> Building NanaSharp C# library ..."
-dotnet build "$ROOT/src/NanaSharp/NanaSharp.csproj" -c "$BUILD_TYPE"
+# ── Managed library (C#) ──────────────────────────────────────────────
+# Build both Debug and Release so `dotnet run` and `dotnet run -c Release` both work.
 
-echo "==> Building HelloWorld example ..."
-dotnet build "$ROOT/samples/HelloWorld/HelloWorld.csproj" -c "$BUILD_TYPE"
+echo "==> Building NanaSharp C# library (Debug + Release) ..."
+dotnet build "$ROOT/src/NanaSharp/NanaSharp.csproj"
+dotnet build "$ROOT/src/NanaSharp/NanaSharp.csproj" -c Release
 
-# Copy the native library alongside the example
-LIB_SRC="$ROOT/native/nanawrap/build/libnanawrap.dylib"
-LIB_SRC_SO="$ROOT/native/nanawrap/build/libnanawrap.so"
-LIB_SRC_WIN="$ROOT/native/nanawrap/build/Release/nanawrap.dll"
+echo "==> Building HelloWorld example (Debug + Release) ..."
+dotnet build "$ROOT/samples/HelloWorld/HelloWorld.csproj"
+dotnet build "$ROOT/samples/HelloWorld/HelloWorld.csproj" -c Release
 
-# Read TargetFramework from the .csproj so we don't hardcode it
+# ── Copy native library to output dirs ─────────────────────────────────
+
 HELLO_CS_PROJ="$ROOT/samples/HelloWorld/HelloWorld.csproj"
 TFM=$(sed -n 's/.*<TargetFramework>\([^<]*\)<\/TargetFramework>.*/\1/p' "$HELLO_CS_PROJ")
-LIB_DST="$ROOT/samples/HelloWorld/bin/$BUILD_TYPE/$TFM/"
-LIB_DST_DBG="$ROOT/samples/HelloWorld/bin/Debug/$TFM/"
 
-mkdir -p "$LIB_DST" "$LIB_DST_DBG"
-
-if [ -f "$LIB_SRC" ]; then
-    cp "$LIB_SRC" "$LIB_DST"
-    cp "$LIB_SRC" "$LIB_DST_DBG"
-elif [ -f "$LIB_SRC_SO" ]; then
-    cp "$LIB_SRC_SO" "$LIB_DST"
-    cp "$LIB_SRC_SO" "$LIB_DST_DBG"
-elif [ -f "$LIB_SRC_WIN" ]; then
-    cp "$LIB_SRC_WIN" "$LIB_DST"
-    cp "$LIB_SRC_WIN" "$LIB_DST_DBG"
+# Platform-specific dylib/so/dll name
+if [ -f "$ROOT/native/nanawrap/build/libnanawrap.dylib" ]; then
+    LIB_FILE="$ROOT/native/nanawrap/build/libnanawrap.dylib"
+elif [ -f "$ROOT/native/nanawrap/build/libnanawrap.so" ]; then
+    LIB_FILE="$ROOT/native/nanawrap/build/libnanawrap.so"
+elif [ -f "$ROOT/native/nanawrap/build/$BUILD_TYPE/nanawrap.dll" ]; then
+    LIB_FILE="$ROOT/native/nanawrap/build/$BUILD_TYPE/nanawrap.dll"
+else
+    LIB_FILE="$ROOT/native/nanawrap/build/nanawrap.dll"
 fi
+
+# Always copy to both Debug and Release so both `dotnet run` and
+# `dotnet run -c Release` work out of the box.
+DST_DBG="$ROOT/samples/HelloWorld/bin/Debug/$TFM"
+DST_REL="$ROOT/samples/HelloWorld/bin/Release/$TFM"
+mkdir -p "$DST_DBG" "$DST_REL"
+cp "$LIB_FILE" "$DST_DBG/"
+cp "$LIB_FILE" "$DST_REL/"
 
 echo ""
 echo "==> All done!"
-echo "    Run:  dotnet run -c $BUILD_TYPE --project samples/HelloWorld"
+echo "    Run:  dotnet run --project samples/HelloWorld"
+echo "    Or:   dotnet run -c Release --project samples/HelloWorld"
